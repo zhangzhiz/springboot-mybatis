@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.menu.dao.RoleMenuRelDao">
+	<resultMap id="RoleMenuRelMap" type="com.example.menu.entity.RoleMenuRel">
+		
+		<id column="id" property="id"/>
+		<result column="role_id" property="roleId"/>
+		<result column="menu_id" property="menuId"/>
+	</resultMap>
+
+	<!--保存 -->
+	<insert id="saveRoleMenuRel" parameterType="com.example.menu.entity.RoleMenuRel" 	useGeneratedKeys="true"
+		keyProperty="id"
+						 >
+		insert into role_menu_rel 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="roleId != null">
+				role_id,
+			</if>
+			<if test="menuId != null">
+				menu_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="roleId != null">
+				#{roleId},
+			</if>
+			<if test="menuId != null">
+				#{menuId},
+			</if>
+		</trim>
+	</insert>
+	
+	<!--修改-->
+	<update id="updateRoleMenuRelById" parameterType="com.example.menu.entity.RoleMenuRel">
+		update role_menu_rel 
+		<set>
+			<if test="id != null">
+				id=#{id},
+			</if>
+			<if test="roleId != null">
+				role_id=#{roleId},
+			</if>
+			<if test="menuId != null">
+				menu_id=#{menuId},
+			</if>
+		</set>
+		where 
+		id=#{id}
+	</update>
+	
+	<!--查询-->
+	<select id="selectRoleMenuRelById" resultMap="RoleMenuRelMap" parameterType="java.lang.Long">
+		select *
+		from role_menu_rel 
+		where
+		id=#{id}
+	</select>
+
+	<!-- 删除菜单角色对应关系 -->
+	<delete id="deleteRoleMenuRelByMenuId" parameterType="java.lang.Long">
+		delete from role_menu_rel where menu_id=#{menuId}
+	</delete>
+
+	<!-- 删除菜单角色对应关系 -->
+	<select id="selectRoleMenuRelByMenuId" resultType="java.lang.Integer" parameterType="java.lang.Long">
+		select count(*) from role_menu_rel where menu_id=#{menuId}
+	</select>
+
+	<!-- 删除菜单角色对应关系 -->
+	<delete id="deleteRoleMenuRelByRoleId" parameterType="java.lang.Long">
+		delete from role_menu_rel where role_id=#{roleId}
+	</delete>
+
+	<!-- 删除菜单角色对应关系 -->
+	<select id="selectRoleMenuRelByRoleId" resultType="java.lang.Integer" parameterType="java.lang.Long">
+		select count(*) from role_menu_rel where role_id=#{roleId}
+	</select>
+
+</mapper>

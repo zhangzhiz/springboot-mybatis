@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.menu.dao.MenuInfoDao">
+	<resultMap id="MenuInfoMap" type="com.example.menu.entity.MenuInfo">
+		
+		<id column="menu_id" property="menuId"/>
+		<result column="menu_name" property="menuName"/>
+		<result column="menu_url" property="menuUrl"/>
+		<result column="parent_id" property="parentId"/>
+		<result column="menu_pers" property="menuPers"/>
+		<result column="menu_type" property="menuType"/>
+		<result column="order_num" property="orderNum"/>
+		<result column="is_enable" property="isEnable"/>
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<!--保存 -->
+	<insert id="saveMenuInfo" parameterType="com.example.menu.entity.MenuInfo" 	useGeneratedKeys="true"
+		keyProperty="menuId"
+												 >
+		insert into menu_info 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="menuId != null">
+				menu_id,
+			</if>
+			<if test="menuName != null">
+				menu_name,
+			</if>
+			<if test="menuUrl != null">
+				menu_url,
+			</if>
+			<if test="parentId != null">
+				parent_id,
+			</if>
+			<if test="menuPers != null">
+				menu_pers,
+			</if>
+			<if test="menuType != null">
+				menu_type,
+			</if>
+			<if test="orderNum != null">
+				order_num,
+			</if>
+			<if test="isEnable != null">
+				is_enable,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="menuId != null">
+				#{menuId},
+			</if>
+			<if test="menuName != null">
+				#{menuName},
+			</if>
+			<if test="menuUrl != null">
+				#{menuUrl},
+			</if>
+			<if test="parentId != null">
+				#{parentId},
+			</if>
+			<if test="menuPers != null">
+				#{menuPers},
+			</if>
+			<if test="menuType != null">
+				#{menuType},
+			</if>
+			<if test="orderNum != null">
+				#{orderNum},
+			</if>
+			<if test="isEnable != null">
+				#{isEnable},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime},
+			</if>
+		</trim>
+	</insert>
+	
+	<!--修改-->
+	<update id="updateMenuInfoById" parameterType="com.example.menu.entity.MenuInfo">
+		update menu_info 
+		<set>
+			<if test="menuId != null">
+				menu_id=#{menuId},
+			</if>
+			<if test="menuName != null">
+				menu_name=#{menuName},
+			</if>
+			<if test="menuUrl != null">
+				menu_url=#{menuUrl},
+			</if>
+			<if test="parentId != null">
+				parent_id=#{parentId},
+			</if>
+			<if test="menuPers != null">
+				menu_pers=#{menuPers},
+			</if>
+			<if test="menuType != null">
+				menu_type=#{menuType},
+			</if>
+			<if test="orderNum != null">
+				order_num=#{orderNum},
+			</if>
+			<if test="isEnable != null">
+				is_enable=#{isEnable},
+			</if>
+			<if test="updateTime != null">
+				update_time=#{updateTime},
+			</if>
+		</set>
+		where 
+		menu_id=#{menuId}
+	</update>
+	
+	<!--查询-->
+	<select id="selectMenuInfoById" resultMap="MenuInfoMap" parameterType="java.lang.Long">
+		select *
+		from menu_info 
+		where
+		menu_id=#{menuId}
+	</select>
+
+	<!--根据用户名查询-->
+	<select id="selectMeanInfoList" resultMap="MenuInfoMap" parameterType="java.lang.String">
+		select m.* from manage_user t
+		left join user_role_rel r on t.user_id = r.user_id
+		left join role_menu_rel rm on r.role_id= rm.role_id
+		left join menu_info m on rm.menu_id = m.menu_id and m.menu_type !='2'
+		where t.user_name= #{userName}
+		order by m.order_num
+	</select>
+
+	<!--查询-->
+	<select id="queryMenuInfoListByMap" resultMap="MenuInfoMap">
+		select *
+		from menu_info
+		where 1=1
+		<if test="menuId != null">
+			and menu_id=#{menuId}
+		</if>
+		<if test="menuName != null">
+			and menu_name like CONCAT ('%',#{menuName},'%')
+		</if>
+		<if test="menuUrl != null">
+			and menu_url=#{menuUrl}
+		</if>
+		<if test="isEnable != null and isEnable !=''">
+			and is_enable=#{isEnable}
+		</if>
+	</select>
+
+	<!--查询-->
+	<select id="queryMenuInfoListByEntity" resultMap="MenuInfoMap" parameterType="com.example.menu.entity.MenuInfo">
+		select *
+		from menu_info
+		where 1=1
+		<if test="menuId != null">
+			and menu_id=#{menuId}
+		</if>
+		<if test="menuName != null">
+		 	and menu_name = #{menuName}
+		</if>
+		<if test="menuType != null">
+			and	menu_type=#{menuType}
+		</if>
+		<if test="parentId != null">
+			and parent_id=#{parentId}
+		</if>
+	</select>
+
+	<!--查询-->
+	<select id="selectParentMenuAllList" resultMap="MenuInfoMap">
+		select *
+		from menu_info
+	</select>
+
+	<!--修改用户启用状态-->
+	<update id="changeMenuStatus">
+		update menu_info set
+		is_enable = #{isEnable}
+		where menu_id in
+		<foreach collection="menuIds" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+	<!-- 删除菜单 -->
+	<delete id="deleteMenuInfoById" parameterType="java.lang.Long">
+		delete from menu_info where menu_id=#{ menuId}
+	</delete>
+
+
+	<!--查询所有菜单-->
+	<select id="selectAllMenuInfoList" resultMap="MenuInfoMap">
+		select *
+		from menu_info
+	</select>
+
+	<!--根据角色查询所有菜单-->
+	<select id="selectMeanInfoByRoleId" resultMap="MenuInfoMap" parameterType="java.lang.Long">
+		select m.* from role_menu_rel rm
+		left join menu_info m on rm.menu_id = m.menu_id
+		where rm.role_id= #{roleId}
+	</select>
+
+
+</mapper>

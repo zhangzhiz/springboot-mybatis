@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.role.dao.RoleInfoDao">
+	<resultMap id="RoleInfoMap" type="com.example.role.entity.RoleInfo">
+		
+		<id column="role_id" property="roleId"/>
+		<result column="role_name" property="roleName"/>
+		<result column="is_enable" property="isEnable"/>
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<!--保存 -->
+	<insert id="saveRoleInfo" parameterType="com.example.role.entity.RoleInfo" 	useGeneratedKeys="true"
+		keyProperty="roleId"
+								 >
+		insert into role_info 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="roleId != null">
+				role_id,
+			</if>
+			<if test="roleName != null">
+				role_name,
+			</if>
+			<if test="isEnable != null">
+				is_enable,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="roleId != null">
+				#{roleId},
+			</if>
+			<if test="roleName != null">
+				#{roleName},
+			</if>
+			<if test="isEnable != null">
+				#{isEnable},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime},
+			</if>
+		</trim>
+	</insert>
+	
+	<!--修改-->
+	<update id="updateRoleInfoById" parameterType="com.example.role.entity.RoleInfo">
+		update role_info 
+		<set>
+			<if test="roleId != null">
+				role_id=#{roleId},
+			</if>
+			<if test="roleName != null">
+				role_name=#{roleName},
+			</if>
+			<if test="isEnable != null">
+				is_enable=#{isEnable},
+			</if>
+			<if test="updateTime != null">
+				update_time=#{updateTime},
+			</if>
+		</set>
+		where 
+		role_id=#{roleId}
+	</update>
+	
+	<!--查询-->
+	<select id="selectRoleInfoById" resultMap="RoleInfoMap" parameterType="java.lang.Long">
+		select *
+		from role_info 
+		where
+		role_id=#{roleId}
+	</select>
+
+	<!--查询-->
+	<select id="selectRoleAllList" resultMap="RoleInfoMap">
+		select *
+		from role_info
+	</select>
+
+	<!--查询-->
+	<select id="selectRoleInfoListByMap" resultMap="RoleInfoMap" parameterType="java.util.Map">
+		select *
+		from role_info
+		where 1=1
+		<if test="roleId != null">
+			and role_id=#{roleId}
+		</if>
+		<if test="roleName != null">
+			and role_name like CONCAT('%',#{roleName},'%')
+		</if>
+		<if test="isEnable != null and isEnable !=''">
+			and is_enable=#{isEnable}
+		</if>
+		<if test="updateTime != null">
+			and update_time=#{updateTime}
+		</if>
+	</select>
+
+	<!--查询-->
+	<select id="selectRoleInfoByRoleName" resultMap="RoleInfoMap" parameterType="java.lang.String">
+		select *
+		from role_info
+		where role_name = #{roleName}
+	</select>
+
+	<!-- 删除角色 -->
+	<delete id="deleteRoleInfoByRoleId" parameterType="java.lang.Long">
+		delete from role_info where role_id=#{roleId}
+	</delete>
+
+</mapper>

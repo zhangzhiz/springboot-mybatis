@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.orderInfo.dao.OrderInfoDao">
+	<resultMap id="OrderInfoMap" type="com.example.orderInfo.entity.OrderInfo">
+		
+		<id column="product_id" property="productId"/>
+		<result column="product_name" property="productName"/>
+		<result column="product_color" property="productColor"/>
+		<result column="product_weight" property="productWeight"/>
+		<result column="product_price" property="productPrice"/>
+		<result column="create_company" property="createCompany"/>
+		<result column="create_time" property="createTime"/>
+	</resultMap>
+
+	<!--保存 -->
+	<insert id="saveOrderInfo" parameterType="com.example.orderInfo.entity.OrderInfo" 	useGeneratedKeys="true" 
+		keyProperty="productId"
+														 >
+		insert into order_info 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productId != null">
+				product_id,
+			</if>
+			<if test="productName != null">
+				product_name,
+			</if>
+			<if test="productColor != null">
+				product_color,
+			</if>
+			<if test="productWeight != null">
+				product_weight,
+			</if>
+			<if test="productPrice != null">
+				product_price,
+			</if>
+			<if test="createCompany != null">
+				create_company,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productId != null">
+				#{productId},
+			</if>
+			<if test="productName != null">
+				#{productName},
+			</if>
+			<if test="productColor != null">
+				#{productColor},
+			</if>
+			<if test="productWeight != null">
+				#{productWeight},
+			</if>
+			<if test="productPrice != null">
+				#{productPrice},
+			</if>
+			<if test="createCompany != null">
+				#{createCompany},
+			</if>
+			<if test="createTime != null">
+				#{createTime},
+			</if>
+		</trim>
+	</insert>
+	
+	<!--修改-->
+	<update id="updateOrderInfoById" parameterType="com.example.orderInfo.entity.OrderInfo">
+		update order_info 
+		<set>
+			<if test="productId != null">
+				product_id=#{productId},
+			</if>
+			<if test="productName != null">
+				product_name=#{productName},
+			</if>
+			<if test="productColor != null">
+				product_color=#{productColor},
+			</if>
+			<if test="productWeight != null">
+				product_weight=#{productWeight},
+			</if>
+			<if test="productPrice != null">
+				product_price=#{productPrice},
+			</if>
+			<if test="createCompany != null">
+				create_company=#{createCompany},
+			</if>
+			<if test="createTime != null">
+				create_time=#{createTime},
+			</if>
+		</set>
+		where 
+		product_id=#{productId}
+	</update>
+	
+	<!--查询-->
+	<select id="selectOrderInfoById" resultMap="OrderInfoMap" parameterType="java.lang.Long">
+		select *
+		from order_info 
+		where
+		product_id=#{productId}
+	</select>
+
+	<!--根据条件查询列表-->
+	<select id="selectOrderInfoListByMap" resultMap="OrderInfoMap" parameterType="java.util.Map">
+		select *
+		from order_info
+		where 1=1
+		<if test="orderInfo != null">
+		<if test="orderInfo.productId != null">
+			and product_id=#{orderInfo.productId}
+		</if>
+		<if test="orderInfo.productName != null">
+			and product_name=#{orderInfo.productName}
+		</if>
+		<if test="orderInfo.productColor != null">
+			and product_color=#{orderInfo.productColor}
+		</if>
+		<if test="orderInfo.productWeight != null">
+			and product_weight=#{orderInfo.productWeight}
+		</if>
+		<if test="orderInfo.productPrice != null">
+			and product_price=#{orderInfo.productPrice}
+		</if>
+		<if test="orderInfo.createCompany != null">
+			and create_company=#{orderInfo.createCompany}
+		</if>
+		<if test="orderInfo.createTime != null">
+			and create_time=#{orderInfo.createTime}
+		</if>
+		</if>
+	</select>
+
+	<!-- 删除 -->
+	<delete id="deleteOrderInfoById" parameterType="java.lang.Long">
+		delete from order_info where product_id=#{productId}
+	</delete>
+</mapper>
